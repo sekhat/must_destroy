@@ -1,6 +1,6 @@
 //! # must_destroy
 //! 
-//! Must destroy is used to create a paramterized deconstructor for a type
+//! Must destroy is used to create a paramterized destructor for a type
 //! that must be explicitly called.
 //! 
 //! `MustDestroy<T, Args>` acts as a guard for a wrapped type that implements the `Destroy`
@@ -17,8 +17,7 @@ use std::ops::{Drop, Deref, DerefMut};
 /// `Args` represents the type to act as an arguments to the destructor. For multiple
 /// arguments you can use a `tuple`
 pub trait Destroy<Args> {
-    /// destroy is like an explicit deconstructor that may require additional
-    /// arguments to perform it's ability to destroy.
+    /// destroys the item being called upon.
     fn destroy(self, args: Args);
 }
 
