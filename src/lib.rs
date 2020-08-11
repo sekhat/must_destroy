@@ -55,33 +55,33 @@ impl<Args, T: Destroy<Args>> Destroy<Args> for MustDestroy<T, Args> {
     }
 }
 
-impl<T: Destroy<()>> MustDestroy<T, ()> {
-    fn destroy(self) {
-        Destroy::destroy(self, ())
-    }
-}
-
 impl<A1, A2, A3, A4, T: Destroy<(A1, A2, A3, A4)>> MustDestroy<T, (A1, A2, A3, A4)> {
-    fn destroy(self, arg1: A1, arg2: A2, arg3: A3, arg4: A4) {
+    pub fn destroy(self, arg1: A1, arg2: A2, arg3: A3, arg4: A4) {
         Destroy::destroy(self, (arg1, arg2, arg3, arg4))
     }
 }
 
 impl<A1, A2, A3, T: Destroy<(A1, A2, A3)>> MustDestroy<T, (A1, A2, A3)> {
-    fn destroy(self, arg1: A1, arg2: A2, arg3: A3) {
+    pub fn destroy(self, arg1: A1, arg2: A2, arg3: A3) {
         Destroy::destroy(self, (arg1, arg2, arg3))
     }
 }
 
 impl<A1, A2, T: Destroy<(A1, A2)>> MustDestroy<T, (A1, A2)> {
-    fn destroy(self, arg1: A1, arg2: A2) {
+    pub fn destroy(self, arg1: A1, arg2: A2) {
         Destroy::destroy(self, (arg1, arg2))
     }
 }
 
 impl<A1, T: Destroy<(A1,)>> MustDestroy<T, (A1,)> {
-    fn destroy(self, arg1: A1) {
+    pub fn destroy(self, arg1: A1) {
         Destroy::destroy(self, (arg1,))
+    }
+}
+
+impl<T: Destroy<()>> MustDestroy<T, ()> {
+    pub fn destroy(self) {
+        Destroy::destroy(self, ())
     }
 }
 
