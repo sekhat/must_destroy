@@ -11,23 +11,23 @@ be consumed safely.
 
 ```rust
 use must_destroy::{MustDestroy, Destroy};
+    struct MyDestroyableItem;
 
-struct MyDestroyableItem;
-
-impl Destroy<()> for MyDestroyableItem {
-    fn destroy(self) {
-        // Do things to destroy item
+    impl Destroy<(&'_ str, i32)> for MyDestroyableItem {
+        fn destroy(self, args: &str) {
+            // Do things to destroy item
+            assert_eq!("Test String", args)
+        }
     }
-}
 
-fn main() {
-    let destroy_me = MustDestroy::<_, ()>::new(MyDestroyableItem);
- 
-    // Dropping the item here would cause a panic at runtime
-    // drop(destroy_me) 
-    
-    // However calling destroy will consume the item, and not cause
-    // a panic.
-    destroy_me.destroy();
-}
+    fn main() {
+        let destroy_me = MustDestroy::new(MyDestroyableItem);
+
+        // Dropping the item here would cause a panic at runtime
+        // drop(destroy_me)
+
+        // However calling destroy will consume the item, and not cause
+        // a panic.
+        destroy_me.destroy("Test String", 12);
+    }
 ```
