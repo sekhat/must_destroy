@@ -14,9 +14,10 @@ use must_destroy::{MustDestroy, Destroy};
     struct MyDestroyableItem;
 
     impl Destroy<(&'_ str, i32)> for MyDestroyableItem {
-        fn destroy(self, args: &str) {
+        fn destroy(self, args: (&str, i32)) {
             // Do things to destroy item
-            assert_eq!("Test String", args)
+            assert_eq!("Test String", args.0);
+            assert_eq!(12, args.1);
         }
     }
 
