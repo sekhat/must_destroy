@@ -8,7 +8,6 @@
 //!
 //! However, calling destroy upon the guard, will call destroy on wrapped child, and will
 //! be consumed safely.
-use std::marker::PhantomData;
 use std::mem::forget;
 use std::ops::{Deref, DerefMut, Drop};
 
