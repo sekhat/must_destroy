@@ -15,7 +15,10 @@ use must_destroy::{MustDestroy, Destroy};
 
     impl Destroy<(&'_ str, i32)> for MyDestroyableItem {
         fn destroy(self, args: (&str, i32)) {
-            // Do things to destroy item
+            
+            // Do things to destroy item...
+
+            // Just to show our arguments got through fine
             assert_eq!("Test String", args.0);
             assert_eq!(12, args.1);
         }
@@ -29,6 +32,10 @@ use must_destroy::{MustDestroy, Destroy};
 
         // However calling destroy will consume the item, and not cause
         // a panic.
-        destroy_me.destroy("Test String", 12);
+        
+        // We currently have to pass the arguments as a tuple.
+        //
+        // I'd like to be able to hide the need to do this though.
+        destroy_me.destroy(("Test String", 12));
     }
 ```
