@@ -23,17 +23,15 @@ pub trait Destroy<Args> {
 
 /// The value contained is an item that can't be dropped and must be
 /// destroyed via calling it's `Destroy::destroy` method.
-pub struct MustDestroy<T: Destroy<Args>, Args> {
-    wrapped: T,
-    _args_marker: PhantomData<Args>,
+pub struct MustDestroy<T> {
+    wrapped: T
 }
 
-impl<Args, T: Destroy<Args>> MustDestroy<T, Args> {
+impl<T> MustDestroy<T> {
     /// Create a new `MustDestroy` for the given item
     pub fn new(item: T) -> Self {
         MustDestroy {
             wrapped: item,
-            _args_marker: PhantomData,
         }
     }
 
@@ -49,49 +47,25 @@ impl<Args, T: Destroy<Args>> MustDestroy<T, Args> {
     }
 }
 
-impl<Args, T: Destroy<Args>> Destroy<Args> for MustDestroy<T, Args> {
+impl<Args, T: Destroy<Args>> Destroy<Args> for MustDestroy<T> {
     fn destroy(self, args: Args) {
         self.into_inner().destroy(args);
     }
 }
 
-impl<A1, A2, A3, A4, T: Destroy<(A1, A2, A3, A4)>> MustDestroy<T, (A1, A2, A3, A4)> {
-    pub fn destroy(self, arg1: A1, arg2: A2, arg3: A3, arg4: A4) {
-        Destroy::destroy(self, (arg1, arg2, arg3, arg4))
-    }
-}
-
-impl<A1, A2, A3, T: Destroy<(A1, A2, A3)>> MustDestroy<T, (A1, A2, A3)> {
-    pub fn destroy(self, arg1: A1, arg2: A2, arg3: A3) {
-        Destroy::destroy(self, (arg1, arg2, arg3))
-    }
-}
-
-impl<A1, A2, T: Destroy<(A1, A2)>> MustDestroy<T, (A1, A2)> {
-    pub fn destroy(self, arg1: A1, arg2: A2) {
-        Destroy::destroy(self, (arg1, arg2))
-    }
-}
-
-impl<A1, T: Destroy<(A1,)>> MustDestroy<T, (A1,)> {
-    pub fn destroy(self, arg1: A1) {
-        Destroy::destroy(self, (arg1,))
-    }
-}
-
-impl<T: Destroy<()>> MustDestroy<T, ()> {
+impl<T: Destroy<()>> MustDestroy<T> {
     pub fn destroy(self) {
         Destroy::destroy(self, ())
     }
 }
 
-impl<Args, T: Destroy<Args>> Drop for MustDestroy<T, Args> {
+impl<T> Drop for MustDestroy<T> {
     fn drop(&mut self) {
         panic!("Can not drop, must call destroy.");
     }
 }
 
-impl<Args, T: Destroy<Args>> Deref for MustDestroy<T, Args> {
+impl<T> Deref for MustDestroy<T> {
     type Target = T;
 
     fn deref(&self) -> &Self::Target {
@@ -99,7 +73,7 @@ impl<Args, T: Destroy<Args>> Deref for MustDestroy<T, Args> {
     }
 }
 
-impl<Args, T: Destroy<Args>> DerefMut for MustDestroy<T, Args> {
+impl<T> DerefMut for MustDestroy<T> {
     fn deref_mut(&mut self) -> &mut Self::Target {
         &mut self.wrapped
     }
@@ -127,6 +101,6 @@ mod tests {
 
         // However calling destroy will consume the item, and not cause
         // a panic.
-        destroy_me.destroy("Test String", 12);
+        destroy_me.destroy(("Test String", 12));
     }
 }
