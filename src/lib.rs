@@ -3,7 +3,7 @@
 //! Must destroy is used to create a paramterized destructor for a type
 //! that must be explicitly called.
 //!
-//! `MustDestroy<T, Args>` acts as a guard for a wrapped type that implements the `Destroy`
+//! `MustDestroy<T>` acts as a guard for a wrapped type that implements the `Destroy`
 //! trait, that causes a `panic` if the guard is dropped.
 //!
 //! However, calling destroy upon the guard, will call destroy on wrapped child, and will
@@ -47,12 +47,14 @@ impl<T> MustDestroy<T> {
 }
 
 impl<Args, T: Destroy<Args>> Destroy<Args> for MustDestroy<T> {
+    /// destroy and consume self and wrapped child
     fn destroy(self, args: Args) {
         self.into_inner().destroy(args);
     }
 }
 
 impl<T: Destroy<()>> MustDestroy<T> {
+    /// destroy and consume self and wrapped child
     pub fn destroy(self) {
         Destroy::destroy(self, ())
     }
